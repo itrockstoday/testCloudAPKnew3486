@@ -12,7 +12,7 @@ dependencies:
   provider: ^6.1.1
   shared_preferences: ^2.2.2
   xterm: ^3.4.1
-  flutter_pty: ^1.0.1
+  flutter_pty: ^0.4.2
   path_provider: ^2.1.2
   google_fonts: ^6.1.0
   intl: ^0.19.0
