@@ -1,6 +1,6 @@
 {
   "name": "Linux Wizard Academy",
-  "description": "Linux Wizard Academy: A standalone Flutter terminal emulator for kids using EDIP. Configured for CI/CD with Codemagic root-level automation and fixed dependency constraints.",
+  "description": "Linux Wizard Academy: A standalone Flutter terminal emulator with EDIP. Build automated via root-level codemagic.yaml. Use the 'Push to GitHub' button and select 'codemagic.yaml' in the Codemagic UI configuration tab.",
   "requestFramePermissions": [],
   "majorCapabilities": ["Flutter APK Ready", "Terminal Simulation", "EDIP Methodology", "Resume Generation"]
 }
