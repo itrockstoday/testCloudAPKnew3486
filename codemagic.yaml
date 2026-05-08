@@ -9,11 +9,15 @@ workflows:
         - google_play_credentials 
     scripts:
       - name: Flutter pub get
-        script: flutter pub get
+        script: |
+          cd flutter_project
+          flutter pub get
       - name: Flutter build APK
-        script: flutter build apk --release
+        script: |
+          cd flutter_project
+          flutter build apk --release
     artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk
+      - flutter_project/build/app/outputs/flutter-apk/app-release.apk
     publishing:
       email:
         recipients:
