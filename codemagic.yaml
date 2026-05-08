@@ -8,6 +8,9 @@ workflows:
       groups:
         - google_play_credentials 
     scripts:
+      - name: Set up local.properties
+        script: |
+          echo "flutter.sdk=$FLUTTER_ROOT" > flutter_project/android/local.properties
       - name: Flutter pub get
         script: |
           cd flutter_project
