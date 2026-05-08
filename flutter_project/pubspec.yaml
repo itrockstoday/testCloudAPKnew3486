@@ -1,0 +1,26 @@
+name: linux_wizard_academy
+description: A standalone Linux terminal emulator for kids using EDIP.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.1.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  xterm: ^3.4.1
+  flutter_pty: ^1.0.1
+  path_provider: ^2.1.2
+  google_fonts: ^6.1.0
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

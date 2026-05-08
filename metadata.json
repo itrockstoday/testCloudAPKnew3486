@@ -1,0 +1,6 @@
+{
+  "name": "Linux Wizard Academy",
+  "description": "A standalone Flutter-based terminal emulator for kids using EDIP methodology.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["Flutter APK Ready", "Terminal Simulation", "EDIP Methodology", "Resume Generation"]
+}
