@@ -9,17 +9,15 @@ workflows:
     scripts:
       - name: Set up local.properties
         script: |
-          echo "flutter.sdk=$FLUTTER_ROOT" > flutter_project/android/local.properties
+          echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
       - name: Flutter pub get
-        working_directory: flutter_project
         script: |
           flutter pub get
       - name: Flutter build APK
-        working_directory: flutter_project
         script: |
           flutter build apk --release
     artifacts:
-      - flutter_project/build/app/outputs/flutter-apk/app-release.apk
+      - build/app/outputs/flutter-apk/app-release.apk
     publishing:
       email:
         recipients:
