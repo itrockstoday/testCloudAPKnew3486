@@ -2,6 +2,14 @@
 
 LOG_FILE="build_errors.log"
 
+# 1. Clear previous log file if it exists
+> "$LOG_FILE"
+
+# 2. FIX: Globally redirect all stdout and stderr into tee right out of the gate.
+# This bypasses subshell buffering issues and guarantees every single character 
+# hitting your terminal is instantly committed to the file.
+exec > >(tee -i -a "$LOG_FILE") 2>&1
+
 run_build() {
     echo "=========================================================="
     echo " Google Cloud Shell - Native Flutter APK Build Script"
@@ -47,9 +55,7 @@ run_build() {
     return $BUILD_STATUS
 }
 
-# Clear previous log file if it exists
-> "$LOG_FILE"
-
-# Run the build function, capture ALL output using tee, and return the real status
-run_build 2>&1 | tee -a "$LOG_FILE"
-exit ${PIPESTATUS[0]}
+# Run the build function directly.
+# (Global logging is already handled perfectly by the exec command above)
+run_build
+exit $?
