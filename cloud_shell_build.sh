@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+LOG_FILE="build_errors.log"
 
 echo "=========================================================="
 echo " Google Cloud Shell - Native Flutter APK Build Script"
+echo " Logging all output and errors to: $LOG_FILE"
 echo "=========================================================="
+
+# Clear previous log file if it exists
+> "$LOG_FILE"
+
+# Redirect all subsequent output (stdout and stderr) to both the console and the log file
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+# Do not exit immediately on error so we can capture the final status and output
+set +e
 
 # 1. Clean previous failed builds and caches
 echo "🧹 [1/4] Cleaning previous builds..."
@@ -13,9 +22,7 @@ flutter clean
 
 # 2. Safely regenerate ONLY the necessary platform files to perfectly match 
 #    YOUR Google Cloud Shell's local Flutter SDK version. 
-#    This eliminates all the Gradle/Kotlin version mismatch errors you've been seeing.
 echo "✨ [2/4] Regenerating and repairing platform files (Android, iOS)..."
-# Taking out the currently corrupted nested gradle config to let Flutter rebuild it perfectly
 rm -rf android/build.gradle android/app/build.gradle android/settings.gradle android/gradle/
 flutter create . --platforms=android,ios,web --org com.example
 
@@ -25,10 +32,21 @@ flutter pub get
 
 # 4. Trigger the native Release APK build
 echo "🔨 [4/4] Building Flutter APK (Release)..."
-flutter build apk --release
+# Using the verbose (-v) flag to capture deep gradle stacktraces and detailed errors
+flutter build apk --release -v
+
+BUILD_STATUS=$?
 
 echo "=========================================================="
-echo "✅ Build Complete!"
-echo " Your APK is located at: build/app/outputs/flutter-apk/app-release.apk"
-echo " You can download it directly from your Cloud Shell console using the file explorer."
+if [ $BUILD_STATUS -eq 0 ]; then
+    echo "✅ Build Complete Successfully!"
+    echo " Your APK is located at: build/app/outputs/flutter-apk/app-release.apk"
+else
+    echo "❌ Build Failed with exit code $BUILD_STATUS!"
+    echo " All error logs have been saved to '$LOG_FILE'."
+    echo " Please open the '$LOG_FILE' file, copy its contents,"
+    echo " and provide them to AI Studio to troubleshoot the error."
+fi
 echo "=========================================================="
+
+exit $BUILD_STATUS
