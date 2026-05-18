@@ -19,22 +19,48 @@ run_build() {
     # Do not exit immediately on error so we can capture the final status and output
     set +e
 
+    # 0. Set up Android SDK
+    echo "⚙️ [1/5] Setting up Android SDK..."
+    export ANDROID_HOME="$HOME/android-sdk"
+    export ANDROID_SDK_ROOT="$HOME/android-sdk"
+    
+    if [ ! -d "$ANDROID_HOME/cmdline-tools/latest/bin" ]; then
+        echo "   Downloading Android SDK Command-line Tools..."
+        mkdir -p "$ANDROID_HOME/cmdline-tools"
+        wget -q "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip" -O cmd-tools.zip
+        unzip -q cmd-tools.zip -d "$ANDROID_HOME/cmdline-tools"
+        rm cmd-tools.zip
+        mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+    fi
+
+    export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools"
+
+    echo "   Accepting SDK licenses..."
+    yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null 2>&1 || true
+
+    echo "   Installing platform tools and build tools..."
+    "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0" > /dev/null 2>&1
+
+    echo "   Configuring Flutter to use the SDK..."
+    flutter config --android-sdk="$ANDROID_HOME"
+    yes | flutter doctor --android-licenses > /dev/null 2>&1 || true
+
     # 1. Clean previous failed builds and caches
-    echo "🧹 [1/4] Cleaning previous builds..."
+    echo "🧹 [2/5] Cleaning previous builds..."
     flutter clean
 
     # 2. Safely regenerate ONLY the necessary platform files to perfectly match 
     #    YOUR Google Cloud Shell's local Flutter SDK version. 
-    echo "✨ [2/4] Regenerating and repairing platform files (Android, iOS)..."
+    echo "✨ [3/5] Regenerating and repairing platform files (Android, iOS)..."
     rm -rf android/build.gradle android/app/build.gradle android/settings.gradle android/gradle/
     flutter create . --platforms=android,ios,web --org com.example
 
     # 3. Pull in all pub packages
-    echo "📦 [3/4] Fetching dependencies..."
+    echo "📦 [4/5] Fetching dependencies..."
     flutter pub get
 
     # 4. Trigger the native Release APK build
-    echo "🔨 [4/4] Building Flutter APK (Release)..."
+    echo "🔨 [5/5] Building Flutter APK (Release)..."
     # Using the verbose (-v) flag to capture deep gradle stacktraces and detailed errors
     flutter build apk --release -v
 

@@ -1,1 +1,6 @@
-body { margin: 0; }
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  background-color: #f9fafb; /* match gray-50 */
+}
